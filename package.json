@@ -9,7 +9,7 @@
   "scripts": {
     "win": "node index.js"
   },
-  "author": "Kim Jooho<jooho7133@gmail.com>",
+  "author": "Kim Jooho <jooho7133@gmail.com>",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/jooho7133/youtube-clone-2021/issues"
