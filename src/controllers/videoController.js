@@ -38,16 +38,23 @@ export const postUpload = async (req, res) => {
   });
   const dbVideo = await video.save();
   */
-  await Video.create({
-    title,
-    description,
-    // createdAt: Date.now(),
-    createdAt: "aldkfaldskfj",
-    hashtags: hashtags.split(",").map((word) => `#${word.trim()}`),
-    meta: {
-      views: 0,
-      rating: 0,
-    },
-  });
-  return res.redirect("/");
+  try {
+    await Video.create({
+      title,
+      description,
+      // createdAt: Date.now(),
+      // createdAt: "aldkfaldskfj",
+      hashtags: hashtags.split(",").map((word) => `#${word.trim()}`),
+      // meta: {
+      //   views: 0,
+      //   rating: 0,
+      // },
+    });
+    return res.redirect("/");
+  } catch (error) {
+    return res.render("upload", {
+      pageTitle: "Upload Video",
+      errorMessage: error._message,
+    });
+  }
 };
