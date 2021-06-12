@@ -19,11 +19,11 @@ app.use(express.urlencoded({ extended: true }));
 app.use(
   session({
     secret: "Hello!",
+    resave: false,
+    saveUninitialized: false,
     store: MongoStore.create({
       mongoUrl: "mongodb://127.0.0.1:27017/youtube-clone-2021",
     }),
-    resave: true,
-    saveUninitialized: true,
   })
 );
 
