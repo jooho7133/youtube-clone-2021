@@ -136,35 +136,6 @@ export const getEdit = (req, res) => {
   return res.render("edit-profile", { pageTitle: "Edit Profile" });
 };
 export const postEdit = async (req, res) => {
-  /**
-   * method 1
-   */
-  // const {
-  //   session: {
-  //     user: { _id, username: sessionUsername, email: sessionEamil },
-  //   },
-  //   body: { name, email, username, location },
-  // } = req;
-  // const searchParam = [];
-  // if (sessionUsername !== username) {
-  //   searchParam.push({ username });
-  // }
-  // if (sessionEamil !== email) {
-  //   searchParam.push({ email });
-  // }
-  // if (searchParam.length > 0) {
-  //   const exists = await User.exists({ $or: searchParam });
-  //   if (exists) {
-  //     return res.status(400).render("edit-profile", {
-  //       pageTitle: "Edit Profile",
-  //       errorMessage: "This username/email is already taken.",
-  //     });
-  //   }
-  // }
-
-  /**
-   * method 2
-   */
   const {
     session: {
       user: { _id },
@@ -180,7 +151,6 @@ export const postEdit = async (req, res) => {
       errorMessage: "This username/email is already taken.",
     });
   }
-
   const updatedUser = await User.findByIdAndUpdate(
     _id,
     {
@@ -191,23 +161,7 @@ export const postEdit = async (req, res) => {
     },
     { new: true }
   );
-
-  /**
-   * method 1
-   */
-  // req.session.user = {
-  //   ...req.session.user,
-  //   name,
-  //   email,
-  //   username,
-  //   location,
-  // };
-
-  /**
-   * method 2
-   */
   req.session.user = updatedUser;
-
   return res.redirect("/users/edit");
 };
 export const remove = (req, res) => res.send("Remove User");
@@ -215,4 +169,16 @@ export const logout = (req, res) => {
   req.session.destroy();
   return res.redirect("/");
 };
+
+export const getChangePassword = (req, res) => {
+  if (req.session.user.socialOnly === true) {
+    return res.redirect("/");
+  }
+  return res.render("users/change-password", { pageTitle: "Change Password" });
+};
+export const postChangePassword = (req, res) => {
+  // send notification
+  return res.redirect("/");
+};
+
 export const see = (req, res) => res.send("See User");
