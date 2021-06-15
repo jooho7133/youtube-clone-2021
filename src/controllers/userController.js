@@ -133,28 +133,82 @@ export const finishGithubLogin = async (req, res) => {
   }
 };
 export const getEdit = (req, res) => {
-  return res.render("edit-profile", { pageTile: "Edit Profile" });
+  return res.render("edit-profile", { pageTitle: "Edit Profile" });
 };
 export const postEdit = async (req, res) => {
+  /**
+   * method 1
+   */
+  // const {
+  //   session: {
+  //     user: { _id, username: sessionUsername, email: sessionEamil },
+  //   },
+  //   body: { name, email, username, location },
+  // } = req;
+  // const searchParam = [];
+  // if (sessionUsername !== username) {
+  //   searchParam.push({ username });
+  // }
+  // if (sessionEamil !== email) {
+  //   searchParam.push({ email });
+  // }
+  // if (searchParam.length > 0) {
+  //   const exists = await User.exists({ $or: searchParam });
+  //   if (exists) {
+  //     return res.status(400).render("edit-profile", {
+  //       pageTitle: "Edit Profile",
+  //       errorMessage: "This username/email is already taken.",
+  //     });
+  //   }
+  // }
+
+  /**
+   * method 2
+   */
   const {
     session: {
       user: { _id },
     },
     body: { name, email, username, location },
   } = req;
-  const user = await User.findByIdAndUpdate(_id, {
-    name,
-    email,
-    username,
-    location,
+  const exists = await User.exists({
+    $and: [{ _id: { $ne: _id } }, { $or: [{ username }, { email }] }],
   });
-  return res.render("edit-profile");
+  if (exists) {
+    return res.status(400).render("edit-profile", {
+      pageTitle: "Edit Profile",
+      errorMessage: "This username/email is already taken.",
+    });
+  }
+
+  const updatedUser = await User.findByIdAndUpdate(
+    _id,
+    {
+      name,
+      email,
+      username,
+      location,
+    },
+    { new: true }
+  );
+
   /**
-   * Below is my code.
+   * method 1
    */
-  // req.session.loggedIn = true;
-  // req.session.user = user;
-  // return res.redirect("/users/edit");
+  // req.session.user = {
+  //   ...req.session.user,
+  //   name,
+  //   email,
+  //   username,
+  //   location,
+  // };
+
+  /**
+   * method 2
+   */
+  req.session.user = updatedUser;
+
+  return res.redirect("/users/edit");
 };
 export const remove = (req, res) => res.send("Remove User");
 export const logout = (req, res) => {
