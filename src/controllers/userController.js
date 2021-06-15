@@ -135,8 +135,26 @@ export const finishGithubLogin = async (req, res) => {
 export const getEdit = (req, res) => {
   return res.render("edit-profile", { pageTile: "Edit Profile" });
 };
-export const postEdit = (req, res) => {
+export const postEdit = async (req, res) => {
+  const {
+    session: {
+      user: { _id },
+    },
+    body: { name, email, username, location },
+  } = req;
+  const user = await User.findByIdAndUpdate(_id, {
+    name,
+    email,
+    username,
+    location,
+  });
   return res.render("edit-profile");
+  /**
+   * Below is my code.
+   */
+  // req.session.loggedIn = true;
+  // req.session.user = user;
+  // return res.redirect("/users/edit");
 };
 export const remove = (req, res) => res.send("Remove User");
 export const logout = (req, res) => {
