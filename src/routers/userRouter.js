@@ -29,7 +29,7 @@ userRouter
   .all(protectorMiddleware)
   .get(getChangePassword)
   .post(postChangePassword);
-userRouter.get(":id(\\d+)", see);
+userRouter.get("/:id", see);
 userRouter.get("/github/finish", publicOnlyMiddleware, finishGithubLogin);
 
 export default userRouter;
